@@ -454,33 +454,28 @@ var MenuCalculator = class {
     };
   }
   async ensureFoods(loader) {
-    if (loader)
-      return loader.getFoods();
+    if (loader) return loader.getFoods();
     return this.fallbackFoods;
   }
   searchUSDA(keyword, foods) {
     const kw = keyword.toLowerCase().trim();
-    if (!kw)
-      return null;
+    if (!kw) return null;
     const exactMatch = foods.find((f) => f.n.toLowerCase().includes(kw));
-    if (exactMatch)
-      return exactMatch;
+    if (exactMatch) return exactMatch;
     const kwWords = kw.split(/[\s,]+/).filter((w) => w.length > 1);
     if (kwWords.length > 1) {
       const multiWordMatch = foods.find((f) => {
         const name = f.n.toLowerCase();
         return kwWords.every((w) => name.includes(w));
       });
-      if (multiWordMatch)
-        return multiWordMatch;
+      if (multiWordMatch) return multiWordMatch;
     }
     const startsWithMatch = foods.find((f) => {
       const name = f.n.toLowerCase();
       const firstPart = name.split(",")[0].trim();
       return firstPart === kw || firstPart.includes(kw);
     });
-    if (startsWithMatch)
-      return startsWithMatch;
+    if (startsWithMatch) return startsWithMatch;
     let bestMatch = null;
     let bestScore = 0;
     const minScore = 0.4;
@@ -498,8 +493,7 @@ var MenuCalculator = class {
   calculateSimilarity(query, target) {
     const queryWords = new Set(query.split(/[\s,]+/).filter((w) => w.length > 1));
     const targetWords = target.split(/[\s,]+/).filter((w) => w.length > 1);
-    if (queryWords.size === 0)
-      return 0;
+    if (queryWords.size === 0) return 0;
     let matches = 0;
     for (const tw of targetWords) {
       for (const qw of queryWords) {
@@ -513,13 +507,11 @@ var MenuCalculator = class {
   }
   searchChinese(cn, foods) {
     const en = FOOD_CN_MAP[cn];
-    if (en)
-      return this.searchUSDA(en, foods);
+    if (en) return this.searchUSDA(en, foods);
     for (const [cnKey, enVal] of Object.entries(FOOD_CN_MAP)) {
       if (cn.includes(cnKey) || cnKey.includes(cn)) {
         const result = this.searchUSDA(enVal, foods);
-        if (result)
-          return result;
+        if (result) return result;
       }
     }
     const commonTranslations = {
@@ -540,8 +532,7 @@ var MenuCalculator = class {
       if (cn.includes(cnChar)) {
         for (const enWord of enWords) {
           const result = this.searchUSDA(enWord, foods);
-          if (result)
-            return result;
+          if (result) return result;
         }
       }
     }
@@ -554,8 +545,7 @@ var MenuCalculator = class {
     const candidates = [nameEn, name].filter(Boolean);
     for (const raw of candidates) {
       const lower = raw.toLowerCase();
-      if (this.booheeAlias[lower])
-        return this.booheeAlias[lower];
+      if (this.booheeAlias[lower]) return this.booheeAlias[lower];
     }
     return candidates[0] || null;
   }
@@ -563,11 +553,9 @@ var MenuCalculator = class {
     var _a;
     for (const item of items || []) {
       const name = this.canonicalBooheeName(item.name, item.name_en);
-      if (!name || typeof item.value !== "number")
-        continue;
+      if (!name || typeof item.value !== "number") continue;
       target[name] = (target[name] || 0) + item.value;
-      if ((_a = item.items) == null ? void 0 : _a.length)
-        this.mergeBooheeItems(target, item.items);
+      if ((_a = item.items) == null ? void 0 : _a.length) this.mergeBooheeItems(target, item.items);
     }
   }
   async fetchFromBoohee(name, client) {
@@ -575,8 +563,7 @@ var MenuCalculator = class {
     try {
       const search = await client.searchFood(name);
       const target = (_a = search.foods) == null ? void 0 : _a[0];
-      if (!target)
-        return null;
+      if (!target) return null;
       const detail = await client.getFoodDetail(target.code);
       const nutrients = {};
       this.mergeBooheeItems(nutrients, detail.calory);
@@ -585,8 +572,7 @@ var MenuCalculator = class {
       this.mergeBooheeItems(nutrients, detail.mineral);
       this.mergeBooheeItems(nutrients, detail.other_ingredients);
       this.mergeBooheeItems(nutrients, detail.amino_acid);
-      if (Object.keys(nutrients).length === 0)
-        return null;
+      if (Object.keys(nutrients).length === 0) return null;
       return { n: ((_b = detail.food) == null ? void 0 : _b.name) || target.name, d: nutrients };
     } catch (err) {
       if (!this.lastBooheeError) {
@@ -608,10 +594,8 @@ var MenuCalculator = class {
       let food = this.searchChinese(ing.name, foods) || this.searchUSDA(ing.name, foods);
       let source;
       if (food) {
-        if (((_a = food.m) == null ? void 0 : _a.dataType) === "China_Embedded")
-          source = "china";
-        else
-          source = opts.loader ? "fooddata" : "usda";
+        if (((_a = food.m) == null ? void 0 : _a.dataType) === "China_Embedded") source = "china";
+        else source = opts.loader ? "fooddata" : "usda";
       }
       if (!food && opts.boohee) {
         food = await this.fetchFromBoohee(ing.name, opts.boohee);
@@ -629,8 +613,7 @@ var MenuCalculator = class {
         unmatched.push(ing.name);
       }
     }
-    for (const k of Object.keys(total))
-      total[k] = Math.round(total[k] * 100) / 100;
+    for (const k of Object.keys(total)) total[k] = Math.round(total[k] * 100) / 100;
     return { ingredients, total, unmatched };
   }
   getLastBooheeError() {
@@ -639,16 +622,14 @@ var MenuCalculator = class {
   // 单独匹配一个食材
   matchSingleIngredient(name, foods) {
     const food = this.searchChinese(name, foods) || this.searchUSDA(name, foods);
-    if (!food)
-      return null;
+    if (!food) return null;
     return { matched: food.n, nutrients: food.d };
   }
   // 汇总所有食材的营养素
   sumNutrients(ingredients) {
     const total = {};
     for (const ing of ingredients) {
-      if (!ing.nutrients)
-        continue;
+      if (!ing.nutrients) continue;
       const ratio = ing.amount / 100;
       for (const [k, v] of Object.entries(ing.nutrients)) {
         if (typeof v === "number") {
@@ -656,8 +637,7 @@ var MenuCalculator = class {
         }
       }
     }
-    for (const k of Object.keys(total))
-      total[k] = Math.round(total[k] * 100) / 100;
+    for (const k of Object.keys(total)) total[k] = Math.round(total[k] * 100) / 100;
     return total;
   }
   compareDRIs(nutrition, pop = "\u6210\u5E74\u7537\u6027") {
@@ -675,32 +655,25 @@ var MenuCalculator = class {
       md += `| ${i.name} | ${i.amount}g | ${i.matched ? i.matched + source : "\u274C"} |
 `;
     }
-    if (unmatched.length)
-      md += `
+    if (unmatched.length) md += `
 > \u26A0\uFE0F \u672A\u5339\u914D: ${unmatched.join(", ")}
 `;
     md += "\n### \u8425\u517B\u6C47\u603B\n| \u8425\u517B\u7D20 | \u542B\u91CF |";
     const dri = driPop ? this.compareDRIs(total, driPop) : null;
-    if (dri)
-      md += " DRI% |";
+    if (dri) md += " DRI% |";
     md += "\n|---|---|";
-    if (dri)
-      md += "---|";
+    if (dri) md += "---|";
     md += "\n";
     const orderedKeys = [];
-    if (dri)
-      orderedKeys.push(...Object.keys(dri));
+    if (dri) orderedKeys.push(...Object.keys(dri));
     for (const k of Object.keys(total)) {
-      if (!orderedKeys.includes(k))
-        orderedKeys.push(k);
+      if (!orderedKeys.includes(k)) orderedKeys.push(k);
     }
     for (const k of orderedKeys) {
       const v = total[k];
-      if (typeof v !== "number")
-        continue;
+      if (typeof v !== "number") continue;
       md += `| ${formatNutrientLabel(k)} | ${v} ${UNITS[k] || ""} |`;
-      if (dri && dri[k])
-        md += ` ${dri[k].percent}% |`;
+      if (dri && dri[k]) md += ` ${dri[k].percent}% |`;
       md += "\n";
     }
     return md;
@@ -714,8 +687,7 @@ var path = __toESM(require("path"));
 // fdc-data.ts
 var cachedData = null;
 function getFDCFoods() {
-  if (cachedData)
-    return cachedData;
+  if (cachedData) return cachedData;
   return [];
 }
 function setFDCFoods(data) {
@@ -765,8 +737,7 @@ function convertFDCToUSDA(fdcFoods, dataType) {
   }));
 }
 function canonicalName(name) {
-  if (!name)
-    return null;
+  if (!name) return null;
   const normalized = name.toLowerCase().trim();
   const aliases = {
     "energy": "Energy",
@@ -837,8 +808,7 @@ function pickNutrients(items) {
     const nutrient = item.nutrient || {};
     const name = canonicalName(nutrient.name);
     const amount = typeof item.amount === "number" ? item.amount : null;
-    if (!name || amount === null)
-      continue;
+    if (!name || amount === null) continue;
     if (NUTRIENT_WHITELIST.size === 0 || NUTRIENT_WHITELIST.has(name)) {
       result[name] = amount;
     }
@@ -865,10 +835,8 @@ var FoodDataLoader = class {
     };
   }
   async getFoods() {
-    if (this.cache)
-      return this.cache;
-    if (!this.loading)
-      this.loading = this.loadAll();
+    if (this.cache) return this.cache;
+    if (!this.loading) this.loading = this.loadAll();
     this.cache = await this.loading;
     this.loading = null;
     return this.cache;
@@ -911,8 +879,7 @@ var FoodDataLoader = class {
     for (const file of uniqFiles) {
       try {
         const loaded = await this.loadFile(file);
-        if (!loaded.length)
-          this.lastErrors.push(`\u672A\u4ECE\u6587\u4EF6\u8BFB\u53D6\u5230\u6570\u636E: ${file}`);
+        if (!loaded.length) this.lastErrors.push(`\u672A\u4ECE\u6587\u4EF6\u8BFB\u53D6\u5230\u6570\u636E: ${file}`);
         foods.push(...loaded);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
@@ -1249,8 +1216,7 @@ function generateSign(params, appKey) {
 }
 function buildTargetLookup(list) {
   const lookup = /* @__PURE__ */ new Map();
-  for (const item of list)
-    lookup.set(item.toLowerCase(), item);
+  for (const item of list) lookup.set(item.toLowerCase(), item);
   return lookup;
 }
 var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
@@ -1261,8 +1227,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
   async onload() {
     await this.loadSettings();
     const getPluginDir = () => {
-      if (!this.manifest.dir)
-        return void 0;
+      if (!this.manifest.dir) return void 0;
       const basePath = this.app.vault.adapter.basePath;
       return basePath ? `${basePath}/${this.manifest.dir}` : void 0;
     };
@@ -1293,8 +1258,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
         if (selection) {
           await this.activateView();
           const view = (_a = this.app.workspace.getLeavesOfType(VIEW_TYPE_NUTRITION)[0]) == null ? void 0 : _a.view;
-          if (view)
-            view.searchFood(selection);
+          if (view) view.searchFood(selection);
         } else {
           new import_obsidian.Notice("\u8BF7\u5148\u9009\u4E2D\u8981\u67E5\u8BE2\u7684\u98DF\u7269\u540D\u79F0");
         }
@@ -1314,8 +1278,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
         await leaf.setViewState({ type: VIEW_TYPE_NUTRITION, active: true });
       }
     }
-    if (leaf)
-      workspace.revealLeaf(leaf);
+    if (leaf) workspace.revealLeaf(leaf);
   }
   async activateMenuCalcView() {
     const { workspace } = this.app;
@@ -1327,8 +1290,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
         await leaf.setViewState({ type: VIEW_TYPE_MENU_CALC, active: true });
       }
     }
-    if (leaf)
-      workspace.revealLeaf(leaf);
+    if (leaf) workspace.revealLeaf(leaf);
   }
   onunload() {
     this.app.workspace.detachLeavesOfType(VIEW_TYPE_NUTRITION);
@@ -1336,8 +1298,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
   }
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-    if (!Array.isArray(this.settings.dataPaths))
-      this.settings.dataPaths = [];
+    if (!Array.isArray(this.settings.dataPaths)) this.settings.dataPaths = [];
     if (!Array.isArray(this.settings.targetNutrients) || this.settings.targetNutrients.length === 0) {
       this.settings.targetNutrients = [...DEFAULT_TARGET_NUTRIENTS];
     }
@@ -1353,11 +1314,9 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
   }
   async getAccessToken() {
     if (this.settings.accessToken && this.settings.tokenExpiredAt) {
-      if (new Date(this.settings.tokenExpiredAt) > new Date())
-        return this.settings.accessToken;
+      if (new Date(this.settings.tokenExpiredAt) > /* @__PURE__ */ new Date()) return this.settings.accessToken;
     }
-    if (!this.settings.appId || !this.settings.appKey)
-      throw new Error("\u8BF7\u5148\u5728\u8BBE\u7F6E\u4E2D\u914D\u7F6E App ID \u548C App Key");
+    if (!this.settings.appId || !this.settings.appKey) throw new Error("\u8BF7\u5148\u5728\u8BBE\u7F6E\u4E2D\u914D\u7F6E App ID \u548C App Key");
     const timestamp = Math.floor(Date.now() / 1e3);
     const params = { app_id: this.settings.appId, timestamp };
     const sign = generateSign(params, this.settings.appKey);
@@ -1367,8 +1326,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...params, sign })
     });
-    if (response.json.error)
-      throw new Error(response.json.error.message);
+    if (response.json.error) throw new Error(response.json.error.message);
     this.settings.accessToken = response.json.access_token;
     this.settings.tokenExpiredAt = response.json.expired_at;
     await this.saveSettings();
@@ -1386,8 +1344,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
       url,
       headers: { "AccessToken": token }
     });
-    if (response.json.error)
-      throw new Error(response.json.error.message);
+    if (response.json.error) throw new Error(response.json.error.message);
     return response.json;
   }
   async getFoodDetail(code) {
@@ -1396,8 +1353,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
       url: `https://fc.boohee.com/api/v3/foods/${code}`,
       headers: { "AccessToken": token }
     });
-    if (response.json.error)
-      throw new Error(response.json.error.message);
+    if (response.json.error) throw new Error(response.json.error.message);
     return response.json;
   }
   getTargetNutrients() {
@@ -1411,25 +1367,20 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
   resolveNutrientAlias(value, targetLookup) {
     const normalized = this.normalizeNutrientKey(value);
     const mapped = NUTRIENT_ALIASES[normalized];
-    if (mapped && targetLookup.has(mapped.toLowerCase()))
-      return mapped;
-    if (targetLookup.has(normalized))
-      return targetLookup.get(normalized) || null;
+    if (mapped && targetLookup.has(mapped.toLowerCase())) return mapped;
+    if (targetLookup.has(normalized)) return targetLookup.get(normalized) || null;
     return null;
   }
   buildAiEndpoint() {
     const base = (this.settings.aiBaseUrl || "").trim();
-    if (!base)
-      return null;
+    if (!base) return null;
     const trimmed = base.replace(/\/+$/, "");
-    if (trimmed.endsWith("/v1"))
-      return `${trimmed}/chat/completions`;
+    if (trimmed.endsWith("/v1")) return `${trimmed}/chat/completions`;
     return `${trimmed}/v1/chat/completions`;
   }
   extractJson(text) {
     const match = text.match(/\{[\s\S]*\}/);
-    if (!match)
-      return null;
+    if (!match) return null;
     try {
       return JSON.parse(match[0]);
     } catch (e) {
@@ -1440,20 +1391,16 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
     return /[\u4e00-\u9fff]/.test(text);
   }
   async mapFoodNameWithAI(raw) {
-    if (!this.settings.aiFoodNameEnabled)
-      return null;
-    if (!this.settings.aiApiKey || !this.settings.aiModel)
-      return null;
+    if (!this.settings.aiFoodNameEnabled) return null;
+    if (!this.settings.aiApiKey || !this.settings.aiModel) return null;
     const endpoint = this.buildAiEndpoint();
-    if (!endpoint)
-      return null;
+    if (!endpoint) return null;
     const key = this.normalizeNutrientKey(raw);
     if (this.settings.aiFoodNameCache[key] !== void 0) {
       const cached = this.settings.aiFoodNameCache[key];
       return cached ? cached : null;
     }
-    if (this.aiMappingInFlight.has(key))
-      return this.aiMappingInFlight.get(key);
+    if (this.aiMappingInFlight.has(key)) return this.aiMappingInFlight.get(key);
     const task = (async () => {
       var _a, _b, _c, _d;
       const system = this.settings.aiFoodNamePrompt || DEFAULT_SETTINGS.aiFoodNamePrompt;
@@ -1478,8 +1425,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
         const content = ((_d = (_c = (_b = (_a = response.json) == null ? void 0 : _a.choices) == null ? void 0 : _b[0]) == null ? void 0 : _c.message) == null ? void 0 : _d.content) || "";
         const parsed = this.extractJson(content);
         let mapped = parsed == null ? void 0 : parsed.mapped;
-        if (typeof mapped === "string")
-          mapped = mapped.trim();
+        if (typeof mapped === "string") mapped = mapped.trim();
         if (!mapped) {
           this.settings.aiFoodNameCache[key] = "";
         } else {
@@ -1499,25 +1445,20 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
     return task;
   }
   async mapFoodNameForSearch(raw) {
-    if (!this.hasCJK(raw))
-      return null;
+    if (!this.hasCJK(raw)) return null;
     return this.mapFoodNameWithAI(raw);
   }
   async mapNutrientWithAI(raw, nameEn, targetList) {
-    if (!this.settings.aiMappingEnabled)
-      return null;
-    if (!this.settings.aiApiKey || !this.settings.aiModel)
-      return null;
+    if (!this.settings.aiMappingEnabled) return null;
+    if (!this.settings.aiApiKey || !this.settings.aiModel) return null;
     const endpoint = this.buildAiEndpoint();
-    if (!endpoint)
-      return null;
+    if (!endpoint) return null;
     const key = this.normalizeNutrientKey(`${raw}||${nameEn || ""}`);
     if (this.settings.aiMappingCache[key] !== void 0) {
       const cached = this.settings.aiMappingCache[key];
       return cached ? cached : null;
     }
-    if (this.aiMappingInFlight.has(key))
-      return this.aiMappingInFlight.get(key);
+    if (this.aiMappingInFlight.has(key)) return this.aiMappingInFlight.get(key);
     const task = (async () => {
       var _a, _b, _c, _d;
       const system = this.settings.aiPrompt || DEFAULT_SETTINGS.aiPrompt;
@@ -1544,8 +1485,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
         const content = ((_d = (_c = (_b = (_a = response.json) == null ? void 0 : _a.choices) == null ? void 0 : _b[0]) == null ? void 0 : _c.message) == null ? void 0 : _d.content) || "";
         const parsed = this.extractJson(content);
         let mapped = parsed == null ? void 0 : parsed.mapped;
-        if (typeof mapped === "string")
-          mapped = mapped.trim();
+        if (typeof mapped === "string") mapped = mapped.trim();
         const targetLookup = buildTargetLookup(targetList);
         if (mapped && targetLookup.has(mapped.toLowerCase())) {
           this.settings.aiMappingCache[key] = targetLookup.get(mapped.toLowerCase()) || mapped;
@@ -1572,12 +1512,10 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
     const candidates = [nameEn, raw].filter(Boolean);
     for (const candidate of candidates) {
       const mapped = this.resolveNutrientAlias(candidate, targetLookup);
-      if (mapped)
-        return mapped;
+      if (mapped) return mapped;
     }
     const primary = raw || nameEn;
-    if (!primary)
-      return null;
+    if (!primary) return null;
     return this.mapNutrientWithAI(primary, nameEn, targetList);
   }
 };
@@ -1621,8 +1559,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
     const searchBtn = searchRow.createEl("button", { text: "\u641C\u7D22", cls: "boohee-btn boohee-btn-primary" });
     searchBtn.onclick = () => this.doSearch();
     this.searchInput.onkeydown = (e) => {
-      if (e.key === "Enter")
-        this.doSearch();
+      if (e.key === "Enter") this.doSearch();
     };
     const tags = searchArea.createDiv({ cls: "boohee-tags" });
     ["\u82F9\u679C", "\u9E21\u86CB", "\u7C73\u996D", "\u725B\u5976", "\u9E21\u80F8\u8089"].forEach((food) => {
@@ -1663,8 +1600,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
       localFoods = this.buildLocalResults(foods, keyword);
       if (!localFoods.length) {
         mappedKeyword = await this.plugin.mapFoodNameForSearch(keyword);
-        if (mappedKeyword)
-          localFoods = this.buildLocalResults(foods, mappedKeyword);
+        if (mappedKeyword) localFoods = this.buildLocalResults(foods, mappedKeyword);
       }
       const diag = this.plugin.foodDataLoader.getLastDiagnostics();
       if (diag.errors.length && !this.localNoticeShown) {
@@ -1693,8 +1629,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
     if (this.plugin.settings.sortByCoverage && booheeFoods.length) {
       await this.enrichCoverageForBoohee(booheeFoods);
     }
-    if (mappedKeyword)
-      new import_obsidian.Notice(`AI \u6620\u5C04\u68C0\u7D22\u5173\u952E\u8BCD: ${mappedKeyword}`);
+    if (mappedKeyword) new import_obsidian.Notice(`AI \u6620\u5C04\u68C0\u7D22\u5173\u952E\u8BCD: ${mappedKeyword}`);
     this.foods = this.mergeResults(booheeFoods, localFoods);
     this.foods = this.applyCoverageFilterAndSort(this.foods, targetTotal);
     if (!this.foods.length) {
@@ -1706,8 +1641,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
       }
       return;
     }
-    if (booheeError)
-      new import_obsidian.Notice(`\u8584\u8377\u63A5\u53E3\u5931\u8D25: ${booheeError.message}`);
+    if (booheeError) new import_obsidian.Notice(`\u8584\u8377\u63A5\u53E3\u5931\u8D25: ${booheeError.message}`);
     this.showFoodList();
   }
   normalizeName(name) {
@@ -1717,8 +1651,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
     const items = [];
     for (const name of names) {
       const value = food.d[name];
-      if (typeof value !== "number")
-        continue;
+      if (typeof value !== "number") continue;
       items.push({
         name,
         value: Math.round(value * 100) / 100,
@@ -1749,11 +1682,9 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
       ...this.flattenBooheeItems(detail.amino_acid)
     ];
     for (const item of items) {
-      if (!(item == null ? void 0 : item.name) || typeof item.value !== "number")
-        continue;
+      if (!(item == null ? void 0 : item.name) || typeof item.value !== "number") continue;
       const mapped = await this.plugin.mapNutrientName(item.name, item.name_en);
-      if (!mapped)
-        continue;
+      if (!mapped) continue;
       const prev = map.get(mapped);
       const nextValue = ((prev == null ? void 0 : prev.value) || 0) + item.value;
       map.set(mapped, { value: nextValue, unit: item.unit_name });
@@ -1765,18 +1696,15 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
     const targetLookup = buildTargetLookup(targets);
     const map = /* @__PURE__ */ new Map();
     for (const [key, value] of Object.entries(food.d || {})) {
-      if (typeof value !== "number")
-        continue;
+      if (typeof value !== "number") continue;
       const mapped = this.resolveLocalNutrient(key, targetLookup);
-      if (!mapped)
-        continue;
+      if (!mapped) continue;
       map.set(mapped, { value, unit: NUTRIENT_UNITS[mapped] });
     }
     return this.buildStandardRowsFromMap(map);
   }
   renderStandardTable(container) {
-    if (!this.standardRows.length)
-      return;
+    if (!this.standardRows.length) return;
     const section = container.createDiv({ cls: "boohee-section" });
     section.createEl("h5", { text: "\u{1F4CA} \u6807\u51C6\u8425\u517B\u8868\uFF08\u76EE\u6807\u6E05\u5355\uFF09" });
     const table = section.createEl("table", { cls: "boohee-table" });
@@ -1820,8 +1748,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
     const keys = /* @__PURE__ */ new Set();
     keys.add(this.normalizeName(keyword));
     const mapped = FOOD_CN_MAP2[keyword];
-    if (mapped)
-      keys.add(this.normalizeName(mapped));
+    if (mapped) keys.add(this.normalizeName(mapped));
     const targetList = this.plugin.getTargetNutrients();
     const targetLookup = buildTargetLookup(targetList);
     const results = [];
@@ -1836,8 +1763,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
           break;
         }
       }
-      if (!hit)
-        continue;
+      if (!hit) continue;
       seq += 1;
       const code = `local:${seq}`;
       const energy = food.d["Energy"];
@@ -1856,8 +1782,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
         coverageCount,
         coverageTotal: targetList.length
       });
-      if (results.length >= LOCAL_RESULT_LIMIT)
-        break;
+      if (results.length >= LOCAL_RESULT_LIMIT) break;
     }
     return results;
   }
@@ -1865,8 +1790,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
     const seen = new Set(booheeFoods.map((f) => this.normalizeName(f.name)));
     const merged = [...booheeFoods];
     for (const local of localFoods) {
-      if (!seen.has(this.normalizeName(local.name)))
-        merged.push(local);
+      if (!seen.has(this.normalizeName(local.name))) merged.push(local);
     }
     return merged;
   }
@@ -1880,26 +1804,22 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
       filtered = [...filtered].sort((a, b) => (b.coverageCount || 0) - (a.coverageCount || 0));
     }
     for (const f of filtered) {
-      if (f.coverageTotal === void 0)
-        f.coverageTotal = total;
+      if (f.coverageTotal === void 0) f.coverageTotal = total;
     }
     return filtered;
   }
   resolveLocalNutrient(name, targetLookup) {
     const normalized = this.normalizeName(name);
     const alias = NUTRIENT_ALIASES[normalized];
-    if (alias && targetLookup.has(alias.toLowerCase()))
-      return alias;
-    if (targetLookup.has(normalized))
-      return targetLookup.get(normalized) || null;
+    if (alias && targetLookup.has(alias.toLowerCase())) return alias;
+    if (targetLookup.has(normalized)) return targetLookup.get(normalized) || null;
     return null;
   }
   countCoverageFromLocal(food, targetLookup) {
     const covered = /* @__PURE__ */ new Set();
     for (const key of Object.keys(food.d || {})) {
       const mapped = this.resolveLocalNutrient(key, targetLookup);
-      if (mapped)
-        covered.add(mapped);
+      if (mapped) covered.add(mapped);
     }
     return covered.size;
   }
@@ -1908,8 +1828,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
     const list = [];
     for (const item of items || []) {
       list.push(item);
-      if ((_a = item.items) == null ? void 0 : _a.length)
-        list.push(...this.flattenBooheeItems(item.items));
+      if ((_a = item.items) == null ? void 0 : _a.length) list.push(...this.flattenBooheeItems(item.items));
     }
     return list;
   }
@@ -1926,19 +1845,16 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
       ...this.flattenBooheeItems(detail.amino_acid)
     ];
     for (const item of allItems) {
-      if (!(item == null ? void 0 : item.name))
-        continue;
+      if (!(item == null ? void 0 : item.name)) continue;
       const mapped = await this.plugin.mapNutrientName(item.name, item.name_en);
-      if (mapped && targetLookup.has(mapped.toLowerCase()))
-        covered.add(mapped);
+      if (mapped && targetLookup.has(mapped.toLowerCase())) covered.add(mapped);
     }
     return covered.size;
   }
   async enrichCoverageForBoohee(foods) {
     const limit = Math.max(0, this.plugin.settings.booheeCoverageFetchLimit || 0);
     const targetTotal = this.plugin.getTargetNutrients().length;
-    if (!limit)
-      return;
+    if (!limit) return;
     const candidates = foods.slice(0, limit);
     for (const food of candidates) {
       try {
@@ -2019,8 +1935,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
     sources.push({ type: "usda", name: "USDA FoodData", icon: "\u{1F1FA}\u{1F1F8}", desc: "\u7F8E\u56FD\u519C\u4E1A\u90E8\u6570\u636E" });
     if (food.source === "fooddata") {
       const usdaIdx = sources.findIndex((s) => s.type === "usda");
-      if (usdaIdx >= 0)
-        sources[usdaIdx].desc = "\u7F8E\u56FD\u519C\u4E1A\u90E8\u6570\u636E \u2713";
+      if (usdaIdx >= 0) sources[usdaIdx].desc = "\u7F8E\u56FD\u519C\u4E1A\u90E8\u6570\u636E \u2713";
     } else if (food.source === "boohee") {
       sources[0].desc = "\u4E2D\u56FD\u98DF\u7269\u6570\u636E \u2713";
     }
@@ -2075,8 +1990,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
     try {
       if (food.source === "fooddata" || food.code.startsWith("local:")) {
         const local = this.localFoodIndex.get(food.code);
-        if (!local)
-          throw new Error("\u672C\u5730\u6570\u636E\u5E93\u672A\u627E\u5230\u8BE5\u98DF\u6750");
+        if (!local) throw new Error("\u672C\u5730\u6570\u636E\u5E93\u672A\u627E\u5230\u8BE5\u98DF\u6750");
         this.currentLocalFood = local;
         this.currentDetail = this.buildLocalDetail(local, food.code);
         this.standardRows = this.buildStandardRowsFromLocal(local);
@@ -2093,32 +2007,26 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
   }
   renderDetail() {
     var _a, _b, _c, _d;
-    if (!this.currentDetail)
-      return;
+    if (!this.currentDetail) return;
     this.contentArea.empty();
     const d = this.currentDetail;
     const backBtn = this.contentArea.createEl("button", { text: "\u2190 \u8FD4\u56DE\u5217\u8868", cls: "boohee-back-btn" });
     backBtn.onclick = () => this.showFoodList();
     const header = this.contentArea.createDiv({ cls: "boohee-detail-header" });
-    if (d.food.thumb_image_url)
-      header.createEl("img", { attr: { src: d.food.thumb_image_url }, cls: "boohee-detail-img" });
+    if (d.food.thumb_image_url) header.createEl("img", { attr: { src: d.food.thumb_image_url }, cls: "boohee-detail-img" });
     const titleArea = header.createDiv({ cls: "boohee-detail-title" });
     titleArea.createEl("h4", { text: d.food.name });
     if (d.source === "fooddata") {
       titleArea.createEl("div", { text: "\u6765\u6E90: FoodData Central (\u6BCF100g)", cls: "boohee-detail-source" });
     }
-    if ((_a = d.lights) == null ? void 0 : _a.length)
-      titleArea.createEl("div", { text: "\u2705 " + d.lights.join("\u3001"), cls: "boohee-lights" });
-    if ((_b = d.warnings) == null ? void 0 : _b.length)
-      titleArea.createEl("div", { text: "\u26A0\uFE0F " + d.warnings.join("\u3001"), cls: "boohee-warnings" });
+    if ((_a = d.lights) == null ? void 0 : _a.length) titleArea.createEl("div", { text: "\u2705 " + d.lights.join("\u3001"), cls: "boohee-lights" });
+    if ((_b = d.warnings) == null ? void 0 : _b.length) titleArea.createEl("div", { text: "\u26A0\uFE0F " + d.warnings.join("\u3001"), cls: "boohee-warnings" });
     const sections = this.contentArea.createDiv({ cls: "boohee-sections" });
     this.renderStandardTable(sections);
     this.renderTable(sections, "\u{1F525} \u70ED\u91CF", d.calory);
     this.renderTable(sections, "\u{1F957} \u4E09\u5927\u8425\u517B\u7D20", d.base_ingredients, true);
-    if ((_c = d.vitamin) == null ? void 0 : _c.filter((v) => v.value > 0).length)
-      this.renderTable(sections, "\u{1F48A} \u7EF4\u751F\u7D20", d.vitamin.filter((v) => v.value > 0));
-    if ((_d = d.mineral) == null ? void 0 : _d.filter((m) => m.value > 0).length)
-      this.renderTable(sections, "\u2697\uFE0F \u77FF\u7269\u8D28", d.mineral.filter((m) => m.value > 0));
+    if ((_c = d.vitamin) == null ? void 0 : _c.filter((v) => v.value > 0).length) this.renderTable(sections, "\u{1F48A} \u7EF4\u751F\u7D20", d.vitamin.filter((v) => v.value > 0));
+    if ((_d = d.mineral) == null ? void 0 : _d.filter((m) => m.value > 0).length) this.renderTable(sections, "\u2697\uFE0F \u77FF\u7269\u8D28", d.mineral.filter((m) => m.value > 0));
     const actions = this.contentArea.createDiv({ cls: "boohee-actions" });
     const insertBtn = actions.createEl("button", { text: "\u{1F4DD} \u63D2\u5165\u7B14\u8BB0", cls: "boohee-btn boohee-btn-primary" });
     insertBtn.onclick = () => this.insertToNote();
@@ -2132,8 +2040,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
   }
   renderTable(container, title, items, showSub = false) {
     var _a;
-    if (!(items == null ? void 0 : items.length))
-      return;
+    if (!(items == null ? void 0 : items.length)) return;
     const section = container.createDiv({ cls: "boohee-section" });
     section.createEl("h5", { text: title });
     const table = section.createEl("table", { cls: "boohee-table" });
@@ -2154,26 +2061,21 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
   }
   generateMarkdown() {
     var _a, _b, _c, _d, _e, _f;
-    if (!this.currentDetail)
-      return "";
+    if (!this.currentDetail) return "";
     const d = this.currentDetail;
     let md = `## ${d.food.name}
 
 `;
-    if ((_a = d.lights) == null ? void 0 : _a.length)
-      md += `> \u2705 ${d.lights.join("\u3001")}
+    if ((_a = d.lights) == null ? void 0 : _a.length) md += `> \u2705 ${d.lights.join("\u3001")}
 
 `;
-    if ((_b = d.warnings) == null ? void 0 : _b.length)
-      md += `> \u26A0\uFE0F ${d.warnings.join("\u3001")}
+    if ((_b = d.warnings) == null ? void 0 : _b.length) md += `> \u26A0\uFE0F ${d.warnings.join("\u3001")}
 
 `;
-    if (d.source === "fooddata")
-      md += `> \u6765\u6E90: FoodData Central (\u6BCF100g)
+    if (d.source === "fooddata") md += `> \u6765\u6E90: FoodData Central (\u6BCF100g)
 
 `;
-    else
-      md += `> \u6765\u6E90: \u8584\u8377\u5065\u5EB7
+    else md += `> \u6765\u6E90: \u8584\u8377\u5065\u5EB7
 
 `;
     if (this.standardRows.length) {
@@ -2195,12 +2097,11 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
       const label = i.name_en && i.name_en !== i.name ? `${i.name} / ${i.name_en}` : formatNutrientLabel2(i.name);
       md += `| ${label} | ${i.value} ${i.unit_name} |
 `;
-      if (i.items)
-        for (const s of i.items) {
-          const subLabel = s.name_en && s.name_en !== s.name ? `${s.name} / ${s.name_en}` : formatNutrientLabel2(s.name);
-          md += `| \u2514 ${subLabel} | ${s.value} ${s.unit_name} |
+      if (i.items) for (const s of i.items) {
+        const subLabel = s.name_en && s.name_en !== s.name ? `${s.name} / ${s.name_en}` : formatNutrientLabel2(s.name);
+        md += `| \u2514 ${subLabel} | ${s.value} ${s.unit_name} |
 `;
-        }
+      }
     }
     const vitamins = ((_c = d.vitamin) == null ? void 0 : _c.filter((v) => v.value > 0)) || [];
     if (vitamins.length) {
@@ -2242,8 +2143,7 @@ var NutritionPanelView = class extends import_obsidian.ItemView {
   }
   openSourceModal() {
     var _a;
-    if (!this.currentDetail)
-      return;
+    if (!this.currentDetail) return;
     const modal = new import_obsidian.Modal(this.app);
     modal.titleEl.setText("\u5F15\u7528\u6570\u636E\u6765\u6E90");
     const body = modal.contentEl.createDiv({ cls: "boohee-source-modal" });
@@ -2404,10 +2304,8 @@ var BooheeNutritionSettingTab = class extends import_obsidian.PluginSettingTab {
         const foods = await this.plugin.foodDataLoader.getFoods();
         const diag = this.plugin.foodDataLoader.getLastDiagnostics();
         let msg = `FoodData \u5DF2\u52A0\u8F7D ${foods.length} \u6761\u8BB0\u5F55`;
-        if (diag.errors.length)
-          msg += `\uFF0C\u8B66\u544A: ${diag.errors[0]}`;
-        else if (diag.usedFallback)
-          msg += "\uFF0C\u4F7F\u7528\u5185\u7F6E\u5C0F\u578B\u5E93";
+        if (diag.errors.length) msg += `\uFF0C\u8B66\u544A: ${diag.errors[0]}`;
+        else if (diag.usedFallback) msg += "\uFF0C\u4F7F\u7528\u5185\u7F6E\u5C0F\u578B\u5E93";
         new import_obsidian.Notice(msg);
       } catch (e) {
         new import_obsidian.Notice("FoodData \u52A0\u8F7D\u5931\u8D25: " + e.message);
@@ -2482,8 +2380,7 @@ var MenuCalcView = class extends import_obsidian.ItemView {
         boohee: this.plugin
       });
       const booheeError = this.calculator.getLastBooheeError();
-      if (booheeError)
-        new import_obsidian.Notice(`\u8584\u8377 API \u67E5\u8BE2\u5931\u8D25: ${booheeError}`);
+      if (booheeError) new import_obsidian.Notice(`\u8584\u8377 API \u67E5\u8BE2\u5931\u8D25: ${booheeError}`);
       const pop = this.popSelect.value;
       const dri = this.calculator.compareDRIs(calcResult.total, pop);
       this.lastResult = { ...calcResult, driPop: pop };
@@ -2555,12 +2452,9 @@ var MenuCalcView = class extends import_obsidian.ItemView {
       const unit = NUTRIENT_UNITS[name] || "";
       row.createEl("td", { text: unit ? `${data.value} ${unit}` : `${data.value}` });
       const pctCell = row.createEl("td", { text: `${data.percent}%` });
-      if (data.percent >= 100)
-        pctCell.addClass("text-green");
-      else if (data.percent >= 50)
-        pctCell.addClass("text-yellow");
-      else
-        pctCell.addClass("text-red");
+      if (data.percent >= 100) pctCell.addClass("text-green");
+      else if (data.percent >= 50) pctCell.addClass("text-yellow");
+      else pctCell.addClass("text-red");
     }
   }
   buildNutritionSummaryTable(dri) {
@@ -2704,13 +2598,10 @@ var MenuCalcView = class extends import_obsidian.ItemView {
       }
       const results = foods.map((food) => {
         const name = (food.n || "").toLowerCase();
-        if (!name.includes(q))
-          return null;
+        if (!name.includes(q)) return null;
         let score = 1;
-        if (name === q)
-          score = 3;
-        else if (name.startsWith(q))
-          score = 2;
+        if (name === q) score = 3;
+        else if (name.startsWith(q)) score = 2;
         return { food, score };
       }).filter(Boolean);
       results.sort((a, b) => b.score - a.score || a.food.n.length - b.food.n.length);

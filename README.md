@@ -1,6 +1,21 @@
-# 超级营养计算器
+# Super Nutrition Calculator
 
 Super Nutrition Calculator is a multi-source nutrition analysis plugin for food, ingredients, and meal formulas. It combines Boohee, USDA FoodData Central, Chinese food composition data, and local nutrition datasets to support food lookup, meal nutrition calculation, 30+ nutrient DRI comparison, and Markdown insertion.
+
+## Features
+
+- Multi-source nutrition lookup from Boohee, Boohee restaurant foods, USDA FoodData Central, Chinese food composition data, and embedded local datasets.
+- Meal and menu nutrition calculation from ingredient names and gram weights.
+- 30+ nutrient DRI comparison for different reference groups such as adult men, adult women, pregnant women, and older adults.
+- Configurable local database paths for FoodData Central Foundation, SR Legacy, Chinese nutrition data, and compatible custom datasets.
+- Nutrition coverage sorting to prioritize records with more complete nutrient data.
+- Optional OpenAI-compatible AI mapping for nutrient field normalization and Chinese ingredient name standardization.
+- Manual ingredient rematching and source switching during meal calculation.
+- Markdown insertion for food details, meal summaries, and DRI comparison tables.
+
+## 中文说明
+
+# 超级营养计算器
 
 一个面向食物、食材和餐品配方的营养分析插件。它整合薄荷健康、USDA FoodData Central、中国食物营养数据和本地扩展数据库，支持单个食物查询、餐品营养汇总、30+ 项营养素 DRI 对比，以及将结果插入笔记。
 
