@@ -1,9 +1,9 @@
 {
   "id": "boohee-nutrition",
-  "name": "薄荷健康营养查询",
+  "name": "膳食营养全景",
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
-  "description": "通过薄荷健康API查询食物和食材的营养成分信息",
+  "description": "整合薄荷健康、USDA FoodData Central 与中国食物营养数据，支持食物查询、餐品营养计算和30+项DRI对比",
   "author": "Your Name",
   "authorUrl": "",
   "fundingUrl": "",

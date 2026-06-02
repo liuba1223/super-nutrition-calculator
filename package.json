@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-boohee-nutrition",
+  "name": "obsidian-diet-nutrition-panorama",
   "version": "1.0.0",
-  "description": "薄荷健康食物营养数据查询插件 for Obsidian",
+  "description": "多数据源膳食营养查询、餐品计算与30+项DRI对比插件 for Obsidian",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
@@ -11,6 +11,10 @@
   "keywords": [
     "obsidian",
     "nutrition",
+    "dri",
+    "usda",
+    "fooddata",
+    "china-foods",
     "boohee",
     "food",
     "health"
