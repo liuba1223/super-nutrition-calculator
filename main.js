@@ -1301,7 +1301,7 @@ var BooheeNutritionPlugin = class extends import_obsidian.Plugin {
       }
     });
     this.addSettingTab(new BooheeNutritionSettingTab(this.app, this));
-    this.addRibbonIcon("apple", "\u81B3\u98DF\u8425\u517B\u5168\u666F", () => this.activateView());
+    this.addRibbonIcon("apple", "\u8D85\u7EA7\u8425\u517B\u8BA1\u7B97\u5668", () => this.activateView());
     this.addRibbonIcon("calculator", "\u83DC\u5355\u8BA1\u7B97\u5668", () => this.activateMenuCalcView());
   }
   async activateView() {
@@ -2291,7 +2291,7 @@ var BooheeNutritionSettingTab = class extends import_obsidian.PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "\u81B3\u98DF\u8425\u517B\u5168\u666F" });
+    containerEl.createEl("h2", { text: "\u8D85\u7EA7\u8425\u517B\u8BA1\u7B97\u5668" });
     const info = containerEl.createDiv({ cls: "boohee-setting-info" });
     info.innerHTML = '<p>\u8BF7\u524D\u5F80 <a href="https://fc.boohee.com">\u8584\u8377\u5065\u5EB7\u5F00\u653E\u5E73\u53F0</a> \u6CE8\u518C\u5E76\u83B7\u53D6 App ID \u548C App Key</p>';
     new import_obsidian.Setting(containerEl).setName("App ID").setDesc("\u5F00\u653E\u5E73\u53F0 App ID").addText((text) => text.setPlaceholder("App ID").setValue(this.plugin.settings.appId).onChange(async (v) => {

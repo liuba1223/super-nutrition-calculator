@@ -407,7 +407,7 @@ export default class BooheeNutritionPlugin extends Plugin {
         });
         
         this.addSettingTab(new BooheeNutritionSettingTab(this.app, this));
-        this.addRibbonIcon('apple', '膳食营养全景', () => this.activateView());
+        this.addRibbonIcon('apple', '超级营养计算器', () => this.activateView());
         this.addRibbonIcon('calculator', '菜单计算器', () => this.activateMenuCalcView());
     }
 
@@ -1401,7 +1401,7 @@ class BooheeNutritionSettingTab extends PluginSettingTab {
     display(): void {
         const { containerEl } = this;
         containerEl.empty();
-        containerEl.createEl('h2', { text: '膳食营养全景' });
+        containerEl.createEl('h2', { text: '超级营养计算器' });
         
         const info = containerEl.createDiv({ cls: 'boohee-setting-info' });
         info.innerHTML = '<p>请前往 <a href="https://fc.boohee.com">薄荷健康开放平台</a> 注册并获取 App ID 和 App Key</p>';
