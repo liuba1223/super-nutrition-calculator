@@ -1,0 +1,11 @@
+{
+  "id": "boohee-nutrition",
+  "name": "薄荷健康营养查询",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "通过薄荷健康API查询食物和食材的营养成分信息",
+  "author": "Your Name",
+  "authorUrl": "",
+  "fundingUrl": "",
+  "isDesktopOnly": false
+}

@@ -1,0 +1,29 @@
+{
+  "appId": "",
+  "appKey": "",
+  "accessToken": "",
+  "tokenExpiredAt": "",
+  "foundationDataPath": "",
+  "legacyDataPath": "",
+  "dataPaths": [],
+  "targetNutrients": [
+    "Energy",
+    "Protein",
+    "Total lipid (fat)",
+    "Carbohydrate, by difference"
+  ],
+  "sortByCoverage": true,
+  "minCoverageCount": 0,
+  "booheeCoverageFetchLimit": 10,
+  "aiMappingEnabled": false,
+  "aiProvider": "openai-compatible",
+  "aiBaseUrl": "",
+  "aiApiKey": "",
+  "aiModel": "",
+  "aiPrompt": "",
+  "aiMappingCache": {},
+  "localFirst": true,
+  "aiFoodNameEnabled": false,
+  "aiFoodNamePrompt": "",
+  "aiFoodNameCache": {}
+}

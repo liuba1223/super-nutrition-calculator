@@ -1,0 +1,502 @@
+/* 薄荷健康营养查询 - 右侧边栏面板样式 */
+
+:root {
+    --boohee-primary: #4CAF50;
+    --boohee-primary-hover: #43A047;
+    --boohee-primary-light: rgba(76, 175, 80, 0.15);
+}
+
+.theme-dark {
+    --boohee-primary: #66BB6A;
+    --boohee-primary-hover: #81C784;
+}
+
+.boohee-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--background-primary);
+}
+
+/* 头部 */
+.boohee-panel-header {
+    padding: 15px;
+    background: linear-gradient(135deg, var(--boohee-primary), #8BC34A);
+    color: white;
+}
+.boohee-panel-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* 搜索区 */
+.boohee-search-area {
+    padding: 15px;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+.boohee-search-row {
+    display: flex;
+    gap: 8px;
+}
+.boohee-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.boohee-input:focus {
+    outline: none;
+    border-color: var(--boohee-primary);
+    box-shadow: 0 0 0 2px var(--boohee-primary-light);
+}
+.boohee-btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    background: var(--background-modifier-border);
+    color: var(--text-normal);
+    transition: all 0.2s;
+}
+.boohee-btn:hover {
+    background: var(--background-modifier-hover);
+}
+.boohee-btn-primary {
+    background: var(--boohee-primary);
+    color: white;
+}
+.boohee-btn-primary:hover {
+    background: var(--boohee-primary-hover);
+}
+
+/* 快捷标签 */
+.boohee-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+.boohee-tag {
+    padding: 4px 10px;
+    background: var(--background-secondary);
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.boohee-tag:hover {
+    background: var(--boohee-primary);
+    color: white;
+}
+
+/* 内容区 */
+.boohee-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+/* 欢迎/加载/错误 */
+.boohee-welcome, .boohee-loading, .boohee-empty, .boohee-error {
+    text-align: center;
+    padding: 30px 10px;
+    color: var(--text-muted);
+}
+.boohee-icon { font-size: 40px; margin-bottom: 10px; }
+.boohee-spinner {
+    width: 30px; height: 30px;
+    border: 3px solid var(--background-modifier-border);
+    border-top-color: var(--boohee-primary);
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 食物列表 */
+.boohee-list-header {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+.boohee-food-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.boohee-food-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: var(--background-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+.boohee-food-item:hover {
+    background: var(--background-modifier-hover);
+    transform: translateX(3px);
+    border-color: var(--boohee-primary-light);
+}
+
+/* 数据源选择按钮 */
+.boohee-source-btn {
+    padding: 6px 10px;
+    background: var(--background-modifier-border);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+.boohee-source-btn:hover {
+    background: var(--boohee-primary);
+    color: white;
+}
+
+/* 数据源下拉菜单 */
+.boohee-source-dropdown {
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 1000;
+    overflow: hidden;
+}
+.boohee-source-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.boohee-source-option:hover {
+    background: var(--background-modifier-hover);
+}
+.boohee-source-option .source-icon {
+    font-size: 18px;
+}
+.boohee-source-option .source-name {
+    font-weight: 500;
+    color: var(--text-normal);
+}
+.boohee-source-option .source-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: auto;
+}
+
+/* 菜单计算器数据源选择 */
+.menu-match-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.menu-match-text {
+    flex: 1;
+}
+.menu-source-btn {
+    padding: 2px 6px;
+    background: var(--background-modifier-border);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+.menu-source-btn:hover {
+    background: var(--boohee-primary);
+    color: white;
+}
+.menu-source-btn-select {
+    background: var(--boohee-primary-light);
+    color: var(--boohee-primary);
+}
+.boohee-food-img {
+    width: 50px; height: 50px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+.boohee-food-img-placeholder {
+    width: 50px; height: 50px;
+    border-radius: 6px;
+    background: var(--background-modifier-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+.boohee-food-info { flex: 1; }
+.boohee-food-name {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+.boohee-food-cal {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+.boohee-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+}
+.boohee-badge-green { background: var(--boohee-primary-light); color: var(--boohee-primary); }
+.boohee-badge-yellow { background: rgba(255,193,7,0.15); color: #FFA000; }
+.boohee-badge-red { background: rgba(244,67,54,0.15); color: #F44336; }
+.boohee-badge-gray { background: rgba(120,120,120,0.12); color: var(--text-muted); }
+
+/* 详情页 */
+.boohee-back-btn {
+    background: none;
+    border: none;
+    color: var(--boohee-primary);
+    cursor: pointer;
+    padding: 0;
+    font-size: 13px;
+    margin-bottom: 12px;
+    transition: color 0.2s;
+}
+.boohee-back-btn:hover { 
+    text-decoration: underline; 
+    color: var(--boohee-primary-hover);
+}
+
+.boohee-detail-header {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+.boohee-detail-img {
+    width: 70px; height: 70px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+.boohee-detail-title h4 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+}
+.boohee-detail-source {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+.boohee-lights { color: var(--boohee-primary); font-size: 12px; margin-bottom: 3px; }
+
+.boohee-source-modal { padding: 6px 2px; }
+.boohee-source-pre {
+    max-height: 320px;
+    overflow: auto;
+    background: var(--background-secondary);
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+.boohee-source-actions { margin-top: 8px; }
+.boohee-warnings { color: #FF9800; font-size: 12px; }
+
+/* 营养表格 */
+.boohee-sections { margin-bottom: 15px; }
+.boohee-section {
+    margin-bottom: 15px;
+}
+.boohee-section h5 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: var(--text-normal);
+}
+.boohee-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.boohee-table tr {
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+.boohee-table td {
+    padding: 8px 5px;
+}
+.td-value {
+    text-align: right;
+    color: var(--boohee-primary);
+    font-weight: 500;
+}
+.sub-row {
+    background: var(--background-secondary);
+}
+.sub-row td:first-child {
+    color: var(--text-muted);
+    padding-left: 15px;
+}
+
+/* 操作按钮 */
+.boohee-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid var(--background-modifier-border);
+}
+.boohee-actions .boohee-btn {
+    flex: 1;
+}
+
+/* 设置页 */
+.boohee-setting-info {
+    background: var(--background-secondary);
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border-left: 3px solid var(--boohee-primary);
+}
+
+/* ============== 菜单计算器样式 ============== */
+.menu-calc-panel {
+    padding: 15px;
+}
+.menu-calc-panel h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+.menu-calc-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+.menu-calc-input {
+    width: 100%;
+    min-height: 120px;
+    padding: 10px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+}
+.menu-calc-input:focus {
+    outline: none;
+    border-color: var(--boohee-primary);
+    box-shadow: 0 0 0 2px var(--boohee-primary-light);
+}
+.menu-calc-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+.menu-calc-select {
+    padding: 6px 10px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+}
+.menu-calc-btns {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+.menu-calc-result {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--background-modifier-border);
+}
+.menu-calc-section {
+    margin-bottom: 20px;
+}
+.menu-calc-section h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+}
+.menu-calc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.menu-calc-header h4 {
+    margin: 0;
+}
+.menu-calc-placeholder {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 20px;
+}
+.menu-search-modal {
+    padding: 10px;
+}
+.menu-search-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    margin-bottom: 10px;
+}
+.menu-search-list {
+    max-height: 360px;
+    overflow: auto;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    padding: 6px;
+    background: var(--background-secondary);
+}
+.menu-search-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.menu-search-item:hover {
+    background: var(--background-modifier-hover);
+}
+.menu-search-name {
+    font-size: 13px;
+}
+.menu-search-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+.menu-search-empty {
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 8px;
+}
+
+/* 颜色标记 */
+.text-red { color: #F44336; }
+.text-green { color: var(--boohee-primary); }
+.text-yellow { color: #FFA000; }
+.text-warning { color: #FF9800; font-size: 12px; margin-top: 8px; }
+
+/* 表格表头 */
+.boohee-table th {
+    text-align: left;
+    padding: 8px 5px;
+    font-weight: 600;
+    border-bottom: 2px solid var(--background-modifier-border);
+}
