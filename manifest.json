@@ -1,9 +1,9 @@
 {
   "id": "super-nutrition-calculator",
   "name": "Super Nutrition Calculator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "0.15.0",
-  "description": "Multi-source nutrition lookup, meal calculation, and 30+ DRI comparison using Boohee, USDA FoodData Central, and Chinese food data",
+  "description": "Multi-source nutrition lookup, meal calculation, and 30+ DRI comparison using Boohee, USDA FoodData Central, and Chinese food data.",
   "author": "liuba1223",
   "authorUrl": "https://github.com/liuba1223",
   "fundingUrl": "",

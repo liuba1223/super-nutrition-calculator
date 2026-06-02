@@ -1,5 +1,7 @@
 # 超级营养计算器
 
+Super Nutrition Calculator is a multi-source nutrition analysis plugin for food, ingredients, and meal formulas. It combines Boohee, USDA FoodData Central, Chinese food composition data, and local nutrition datasets to support food lookup, meal nutrition calculation, 30+ nutrient DRI comparison, and Markdown insertion.
+
 一个面向食物、食材和餐品配方的营养分析插件。它整合薄荷健康、USDA FoodData Central、中国食物营养数据和本地扩展数据库，支持单个食物查询、餐品营养汇总、30+ 项营养素 DRI 对比，以及将结果插入笔记。
 
 相比单纯的薄荷健康查询工具，本插件更适合用于餐品研发、膳食记录、营养核算和不同数据源之间的营养字段对照。
