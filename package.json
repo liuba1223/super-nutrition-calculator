@@ -1,6 +1,6 @@
 {
   "name": "super-nutrition-calculator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "多数据源膳食营养查询、餐品计算与30+项DRI对比插件",
   "main": "main.js",
   "scripts": {
