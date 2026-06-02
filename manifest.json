@@ -1,9 +1,9 @@
 {
   "id": "super-nutrition-calculator",
-  "name": "超级营养计算器",
+  "name": "Super Nutrition Calculator",
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
-  "description": "整合薄荷健康、USDA FoodData Central 与中国食物营养数据，支持食物查询、餐品营养计算和30+项DRI对比",
+  "description": "Multi-source nutrition lookup, meal calculation, and 30+ DRI comparison using Boohee, USDA FoodData Central, and Chinese food data",
   "author": "liuba1223",
   "authorUrl": "https://github.com/liuba1223",
   "fundingUrl": "",
